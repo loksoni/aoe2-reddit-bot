@@ -61,13 +61,14 @@ try:
         if hasattr(comment, "body") and comment.id not in prev_id:
             search_word = comment.body.replace("\\", "")
             word = re.findall(r"\[([A-Za-z0-9-\s]+)\]", search_word)
-            commentReply = []
+            commentReply = ''
             if word is not None and len(word) > 0:
                 for i in range(0, len(word)):
                     if word[i].lower() in tech_keys:
                         word[i] = word[i].lower()
                         print("Match: ", word[i])
-                        commentReply.append(word[i] + ": " + scraping.tech_all[word[i]]+'\n\n')
+                        commentReply = commentReply + word[i] + ": " + scraping.tech_all[word[i]]+'\n\n'
+                        #commentReply.append(word[i] + ": " + scraping.tech_all[word[i]]+'\n\n')
                         #comment.reply(word[i] + ": " + scraping.tech_all[word[i]])
                         print(scraping.tech_all[word[i]])
                         dynamodb.put_item(TableName="aoe-logs",
@@ -81,6 +82,7 @@ try:
                         count += 1
                         prev_id.append(comment.id)
                 comment.reply(commentReply)
+                print(commentReply)
                 print('count: ', count)
                 print("Continuing search")
                 print("reply given")
