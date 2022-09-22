@@ -62,7 +62,7 @@ try:
             search_word = comment.body.replace("\\", "")
             word = re.findall(r"\[([A-Za-z0-9-\s]+)\]", search_word)
             commentReply = ''
-            if word is not None and len(word) > 0:
+            if word is not None and len(word) > 0 and word.lower() in tech_keys:
                 for i in range(0, len(word)):
                     if word[i].lower() in tech_keys:
                         word[i] = word[i].lower()
