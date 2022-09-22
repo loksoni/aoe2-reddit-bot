@@ -69,12 +69,16 @@ try:
                         print(scraping.tech_all[word[i]])
                         dynamodb.put_item(TableName="aoe-bot-table",
                                           Item={
-                                              'id': {'S': str(i+1)}, 'Body': {'S': str(comment.body)}, 'cid': {'S': str(comment.id), "Time": {"S": str(datetime_IN)}}}
+                                              'id': {'S': str(i+1)},
+                                              'Body': {'S': str(comment.body)},
+                                              'cid': {'S': str(comment.id)},
+                                              'Time': {"S": str(datetime_IN)}}
                                           )
                         print('comment stored in database')
                         count += 1
                         prev_id.append(comment.id)
                         print('count: ', count)
+                    print("Continuing search")
         time.sleep(.15)
 except KeyboardInterrupt:
     print("Interrupted by Keyboard")
