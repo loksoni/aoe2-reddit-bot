@@ -80,8 +80,8 @@ try:
                         print('comment stored in database')
                         count += 1
                         prev_id.append(comment.id)
-                        comment.reply(commentReply)
-                        print('count: ', count)
+                comment.reply(commentReply)
+                print('count: ', count)
                 print("Continuing search")
                 print("reply given")
         time.sleep(.15)
