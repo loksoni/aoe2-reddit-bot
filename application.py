@@ -19,7 +19,7 @@ reddit = praw.Reddit(
     username=credentials.username,
     password=credentials.password
 )
-
+print(reddit.user.me())
 print('praw initialized successfully')
 s3 = boto3.client('s3',
                   aws_access_key_id=credentials.accessKey,
