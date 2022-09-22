@@ -69,7 +69,7 @@ try:
                         print(scraping.tech_all[word[i]])
                         dynamodb.put_item(TableName="aoe-bot-table",
                                           Item={
-                                              'id': {'S': str(i+1)},
+                                              'id': {'S': str(count+1)},
                                               'Body': {'S': str(comment.body)},
                                               'cid': {'S': str(comment.id)},
                                               'Time': {"S": str(datetime_IN)}}
