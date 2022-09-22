@@ -41,9 +41,9 @@ cid = []
 count = 0
 while True:
     try:
-        response = dynamodb.get_item(TableName='aoe-bot-table',
+        response = dynamodb.get_item(TableName='aoe-logs',
                                      Key={
-                                         "id": {"S": str(count+1)}
+                                         "id": {"N": str(count+1)}
                                      }
                                      )
         cid.append(response["Item"]["cid"]["S"])
@@ -55,21 +55,24 @@ print("count: ", count)
 print("cid: ", cid)
 prev_id = cid
 print('searching for comments now')
+
 try:
     for comment in subreddit.stream.comments(skip_existing=True):
         if hasattr(comment, "body") and comment.id not in prev_id:
             search_word = comment.body.replace("\\", "")
             word = re.findall(r"\[([A-Za-z0-9-\s]+)\]", search_word)
+            commentReply = []
             if word is not None and len(word) > 0:
                 for i in range(0, len(word)):
                     if word[i].lower() in tech_keys:
                         word[i] = word[i].lower()
                         print("Match: ", word[i])
-                        comment.reply(word[i] + ": " + scraping.tech_all[word[i]])
+                        commentReply.append(word[i] + ": " + scraping.tech_all[word[i]]+'\n\n')
+                        #comment.reply(word[i] + ": " + scraping.tech_all[word[i]])
                         print(scraping.tech_all[word[i]])
-                        dynamodb.put_item(TableName="aoe-bot-table",
+                        dynamodb.put_item(TableName="aoe-logs",
                                           Item={
-                                              'id': {'S': str(count+1)},
+                                              'id': {'N': str(count+1)},
                                               'Body': {'S': str(comment.body)},
                                               'cid': {'S': str(comment.id)},
                                               'Time': {"S": str(datetime_IN)}}
@@ -77,8 +80,10 @@ try:
                         print('comment stored in database')
                         count += 1
                         prev_id.append(comment.id)
+                        comment.reply(commentReply)
                         print('count: ', count)
-                    print("Continuing search")
+                print("Continuing search")
+                print("reply given")
         time.sleep(.15)
 except KeyboardInterrupt:
     print("Interrupted by Keyboard")
