@@ -71,16 +71,16 @@ try:
                         #commentReply.append(word[i] + ": " + scraping.tech_all[word[i]]+'\n\n')
                         #comment.reply(word[i] + ": " + scraping.tech_all[word[i]])
                         print(scraping.tech_all[word[i]])
-                        dynamodb.put_item(TableName="aoe-logs",
-                                          Item={
-                                              'id': {'N': str(count+1)},
-                                              'Body': {'S': str(comment.body)},
-                                              'cid': {'S': str(comment.id)},
-                                              'Time': {"S": str(datetime_IN)}}
-                                          )
-                        print('comment stored in database')
-                        count += 1
                         prev_id.append(comment.id)
+                dynamodb.put_item(TableName="aoe-logs",
+                                  Item={
+                                      'id': {'N': str(count + 1)},
+                                      'Body': {'S': str(comment.body)},
+                                      'cid': {'S': str(comment.id)},
+                                      'Time': {"S": str(datetime_IN)}}
+                                  )
+                print('comment stored in database')
+                count += 1
                 comment.reply(commentReply)
                 print(commentReply)
                 print('count: ', count)
