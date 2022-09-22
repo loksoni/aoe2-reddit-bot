@@ -62,9 +62,11 @@ try:
             search_word = comment.body.replace("\\", "")
             word = re.findall(r"\[([A-Za-z0-9-\s]+)\]", search_word)
             commentReply = ''
+            flag = 0
             if word is not None and len(word) > 0 and word.lower() in tech_keys:
                 for i in range(0, len(word)):
                     if word[i].lower() in tech_keys:
+                        flag = 1
                         word[i] = word[i].lower()
                         print("Match: ", word[i])
                         commentReply = commentReply + word[i] + ": " + scraping.tech_all[word[i]]+'\n\n'
@@ -72,20 +74,24 @@ try:
                         #comment.reply(word[i] + ": " + scraping.tech_all[word[i]])
                         print(scraping.tech_all[word[i]])
                         prev_id.append(comment.id)
-                dynamodb.put_item(TableName="aoe-logs",
-                                  Item={
-                                      'id': {'N': str(count + 1)},
-                                      'Body': {'S': str(comment.body)},
-                                      'cid': {'S': str(comment.id)},
-                                      'Time': {"S": str(datetime_IN)}}
-                                  )
-                print('comment stored in database')
-                count += 1
-                comment.reply(commentReply)
-                print(commentReply)
-                print('count: ', count)
-                print("Continuing search")
-                print("reply given")
+                    else:
+                        pass
+                if flag==1:
+                    dynamodb.put_item(TableName="aoe-logs",
+                                      Item={
+                                          'id': {'N': str(count + 1)},
+                                          'Body': {'S': str(comment.body)},
+                                          'cid': {'S': str(comment.id)},
+                                          'Time': {"S": str(datetime_IN)}}
+                                      )
+                    print('comment stored in database')
+                    count += 1
+                    comment.reply(commentReply)
+                    print(commentReply)
+                    print('count: ', count)
+                    print("Continuing search")
+                    print("reply given")
+                flag = 0
         time.sleep(.15)
 except KeyboardInterrupt:
     print("Interrupted by Keyboard")
